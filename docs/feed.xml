@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.shrikanthup.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.shrikanthup.com/" rel="alternate" type="text/html" /><updated>2021-11-30T17:29:53+05:30</updated><id>https://blog.shrikanthup.com/feed.xml</id><title type="html">Reflections</title><author><name>Shrikanth Upadhayaya</name></author><entry><title type="html">Hello, world!</title><link href="https://blog.shrikanthup.com/2021-11-23-hello-world/" rel="alternate" type="text/html" title="Hello, world!" /><published>2021-11-23T00:00:00+05:30</published><updated>2021-11-23T00:00:00+05:30</updated><id>https://blog.shrikanthup.com/hello-world</id><content type="html" xml:base="https://blog.shrikanthup.com/2021-11-23-hello-world/">&lt;p&gt;Welcome to our blog! Here, you can catch up on stuff we&amp;#8217;ve been toying
+  with, what we&amp;#8217;ve learned in the process and stuff that, hopefully, you
+  can take away something from that.&lt;/p&gt;
+&lt;h1&gt;The Details&lt;/h1&gt;
+&lt;p&gt;This blog is currently hosted on github pages CNAMED to our
+  domain. We try to make website completely usable without any
+  javascript; if you notice issues with javascript disabled, please let
+  us know. Comments are via &lt;a href=&quot;https://github.com/giscus/giscus&quot;&gt;giscus&lt;/a&gt;, and require javascript.&lt;/p&gt;
+&lt;p&gt;Our stack uses jekyll, with our theme being forked from &lt;a href=&quot;https://github.com/rahul-bothra/parchment&quot;&gt;parchment&lt;/a&gt;. Our
+  choice of jekyll was motivated by its extensibility and our prior
+  experience with ruby. Since the two of us write in different formats
+  (markdown and org mode, for example) we couldn&amp;#8217;t go with a system that
+  didn&amp;#8217;t at least support the two, and hugo wasn&amp;#8217;t a good fit for us
+  since we&amp;#8217;re not as comfortable maintaining templates in its syntax.&lt;/p&gt;
+&lt;h1&gt;What&amp;#8217;s coming?&lt;/h1&gt;
+&lt;p&gt;In the near future, we&amp;#8217;ll be writing on Phoenix and Kotlin
+  Multiplatform, and beyond that wherever our technical adventures take
+  us.&lt;/p&gt;
+&lt;p&gt;That&amp;#8217;s it for now. Before we leave, here&amp;#8217;s a funny snippet:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aws_shared_credential_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;AWS_SHARED_CREDENTIAL_PATH&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;unless&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;AWS_CREDS_IN_SECRETS&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/run/secrets/aws_credentials&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;;)&lt;/p&gt;</content><author><name>Shrikanth Upadhayaya</name></author><category term="meta" /><summary type="html">Welcome to our blog! Here, you can catch up on stuff we&amp;#8217;ve been toying with, what we&amp;#8217;ve learned in the process and stuff that, hopefully, you can take away something from that. The Details This blog is currently hosted on github pages CNAMED to our domain. We try to make website completely usable without any javascript; if you notice issues with javascript disabled, please let us know. Comments are via giscus, and require javascript. Our stack uses jekyll, with our theme being forked from parchment. Our choice of jekyll was motivated by its extensibility and our prior experience with ruby. Since the two of us write in different formats (markdown and org mode, for example) we couldn&amp;#8217;t go with a system that didn&amp;#8217;t at least support the two, and hugo wasn&amp;#8217;t a good fit for us since we&amp;#8217;re not as comfortable maintaining templates in its syntax. What&amp;#8217;s coming? In the near future, we&amp;#8217;ll be writing on Phoenix and Kotlin Multiplatform, and beyond that wherever our technical adventures take us. That&amp;#8217;s it for now. Before we leave, here&amp;#8217;s a funny snippet: config.aws_shared_credential_path = ( ENV[&amp;#39;AWS_SHARED_CREDENTIAL_PATH&amp;#39;] unless ENV[&amp;#39;AWS_CREDS_IN_SECRETS&amp;#39;] then &amp;#39;/run/secrets/aws_credentials&amp;#39; ) ;)</summary></entry></feed>

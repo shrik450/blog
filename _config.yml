@@ -1,0 +1,17 @@
+title: Reflections
+author: Shrikanth Upadhayaya
+
+destination: docs
+
+url: "https://blog.shrikanthup.com"
+
+footer_only_homepage: true
+footer_url: "https://github.com/shrik450/blog"
+footer_text: "Powered by Jekyll. Theme forked from parchment."
+
+favicon_location: assets/favicon.ico
+
+permalink: /:year-:month-:day-:title/
+sass:
+  style: compressed
+  sass_dir: css

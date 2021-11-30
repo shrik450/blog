@@ -1,0 +1,39 @@
+#+TITLE: Hello, world!
+#+LAYOUT: post
+#+TAGS: meta
+
+Welcome to our blog! Here, you can catch up on stuff we've been toying
+with, what we've learned in the process and stuff that, hopefully, you
+can take away something from that.
+
+* The Details
+
+This blog is currently hosted on github pages CNAMED to our
+domain. We try to make website completely usable without any
+javascript; if you notice issues with javascript disabled, please let
+us know. Comments are via [[https://github.com/giscus/giscus][giscus]], and require javascript.
+
+Our stack uses jekyll, with our theme being forked from [[https://github.com/rahul-bothra/parchment][parchment]]. Our
+choice of jekyll was motivated by its extensibility and our prior
+experience with ruby. Since the two of us write in different formats
+(markdown and org mode, for example) we couldn't go with a system that
+didn't at least support the two, and hugo wasn't a good fit for us
+since we're not as comfortable maintaining templates in its syntax.
+
+* What's coming?
+
+In the near future, we'll be writing on Phoenix and Kotlin
+Multiplatform, and beyond that wherever our technical adventures take
+us.
+
+That's it for now. Before we leave, here's a funny snippet:
+
+#+begin_src ruby
+  config.aws_shared_credential_path = (
+    ENV['AWS_SHARED_CREDENTIAL_PATH']
+    unless ENV['AWS_CREDS_IN_SECRETS']
+    then '/run/secrets/aws_credentials'
+  )
+#+end_src
+
+;)

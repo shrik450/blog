@@ -1,0 +1,37 @@
+main .pagination-loader-container {
+ background-image:url(https://github.com/images/modules/pulls/progressive-disclosure-line-dark.svg)
+}
+
+/*! Custom CSS */
+main {
+    --color-canvas-overlay: #fefecd;
+    --color-bg-overlay: #fefecd;
+    --color-border-default: #cacab0;
+    --color-border-primary: #cacab0;
+    --color-input-border:  #cacab0;
+    --color-accent-muted: #cacab0;
+    --color-box-border-info: #cacab0;
+    --color-btn-primary-border: #cacab0;
+
+    --color-canvas-inset: #ffffc5;
+    --color-bg-canvas-inset: #ffffc5;
+}
+.gsc-reactions-count {
+ display:none
+}
+.gsc-comments>.gsc-header {
+ order:1
+}
+.gsc-comments>.gsc-comment-box {
+ margin-bottom:1rem;
+ order:2
+}
+.gsc-comments>.gsc-timeline {
+ order:3
+}
+.gsc-timeline {
+ flex-direction:column-reverse
+}
+.gsc-header {
+ padding-bottom:1rem
+}
