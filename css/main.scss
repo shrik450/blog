@@ -9,15 +9,18 @@ $max-width: 960px;
 $med-width: 600px;
 $small-width: 480px;
 
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=JetBrains+Mono&display=swap');
+
 // Basic
 
 body {
   margin: 0;
-  font-family: "Inconsolata";
+  font-family: 'IBM Plex Mono', monospace;
   background-color: #ffffdd;
   min-height: 100%;
   font-size-adjust: 0.59;
 }
+
 a {
   text-decoration: none;
   color: $accent;
@@ -208,7 +211,7 @@ hr {
     content: "[" counter(list, decimal) "] ";
     counter-increment: list;
     position: absolute;
-    left: -30px;
+    left: -45px;
   }
   blockquote {
     border-left: 5px solid #333333;
@@ -320,4 +323,16 @@ table tr td :last-child {
   padding: 16px;
   overflow: auto;
   max-height: 90vh;
+}
+
+pre {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  color: #9d0006;
+  background-color: #fbf1c7;
+  padding-left: 4px;
+  padding-right: 4px;
 }
