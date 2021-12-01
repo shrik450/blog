@@ -1,26 +1,69 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.shrikanthup.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.shrikanthup.com/" rel="alternate" type="text/html" /><updated>2021-11-30T17:29:53+05:30</updated><id>https://blog.shrikanthup.com/feed.xml</id><title type="html">Reflections</title><author><name>Shrikanth Upadhayaya</name></author><entry><title type="html">Hello, world!</title><link href="https://blog.shrikanthup.com/2021-11-23-hello-world/" rel="alternate" type="text/html" title="Hello, world!" /><published>2021-11-23T00:00:00+05:30</published><updated>2021-11-23T00:00:00+05:30</updated><id>https://blog.shrikanthup.com/hello-world</id><content type="html" xml:base="https://blog.shrikanthup.com/2021-11-23-hello-world/">&lt;p&gt;Welcome to our blog! Here, you can catch up on stuff we&amp;#8217;ve been toying
-  with, what we&amp;#8217;ve learned in the process and stuff that, hopefully, you
-  can take away something from that.&lt;/p&gt;
-&lt;h1&gt;The Details&lt;/h1&gt;
-&lt;p&gt;This blog is currently hosted on github pages CNAMED to our
-  domain. We try to make website completely usable without any
-  javascript; if you notice issues with javascript disabled, please let
-  us know. Comments are via &lt;a href=&quot;https://github.com/giscus/giscus&quot;&gt;giscus&lt;/a&gt;, and require javascript.&lt;/p&gt;
-&lt;p&gt;Our stack uses jekyll, with our theme being forked from &lt;a href=&quot;https://github.com/rahul-bothra/parchment&quot;&gt;parchment&lt;/a&gt;. Our
-  choice of jekyll was motivated by its extensibility and our prior
-  experience with ruby. Since the two of us write in different formats
-  (markdown and org mode, for example) we couldn&amp;#8217;t go with a system that
-  didn&amp;#8217;t at least support the two, and hugo wasn&amp;#8217;t a good fit for us
-  since we&amp;#8217;re not as comfortable maintaining templates in its syntax.&lt;/p&gt;
-&lt;h1&gt;What&amp;#8217;s coming?&lt;/h1&gt;
-&lt;p&gt;In the near future, we&amp;#8217;ll be writing on Phoenix and Kotlin
-  Multiplatform, and beyond that wherever our technical adventures take
-  us.&lt;/p&gt;
-&lt;p&gt;That&amp;#8217;s it for now. Before we leave, here&amp;#8217;s a funny snippet:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aws_shared_credential_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-  &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;AWS_SHARED_CREDENTIAL_PATH&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;unless&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;AWS_CREDS_IN_SECRETS&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/run/secrets/aws_credentials&amp;#39;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.shrikanthup.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.shrikanthup.com/" rel="alternate" type="text/html" /><updated>2021-12-01T07:14:52+05:30</updated><id>https://blog.shrikanthup.com/feed.xml</id><title type="html">Reflections</title><author><name>Shrikanth Upadhayaya</name></author><entry><title type="html">Hello, Advent of Code!</title><link href="https://blog.shrikanthup.com/2021-11-30-hello-aoc/" rel="alternate" type="text/html" title="Hello, Advent of Code!" /><published>2021-11-30T00:00:00+05:30</published><updated>2021-11-30T00:00:00+05:30</updated><id>https://blog.shrikanthup.com/hello-aoc</id><content type="html" xml:base="https://blog.shrikanthup.com/2021-11-30-hello-aoc/">&lt;p&gt;Hello there! I&amp;#8217;ve been planning to write a blog for a while - I&amp;#8217;ve
+  usually got more than a few thoughts kicking around in my head that
+  would do me better if I wrote them down somewhere - but I think I&amp;#8217;ve
+  finally found a good reason to kick start it: advent of code and roc.&lt;/p&gt;
+&lt;h1&gt;What&amp;#8217;s Roc?&lt;/h1&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.roc-lang.org/&quot;&gt;Roc&lt;/a&gt; is a new and not yet released functional programming
+  language. If you look at it purely from a syntax/features point of
+  view, you might not find anything interesting about it, but I invite
+  you to check out &lt;a href=&quot;https://www.youtube.com/watch?v=cpQwtwVKAfU&quot;&gt;this talk&lt;/a&gt; by its creator, &lt;a href=&quot;https://twitter.com/rtfeldman&quot;&gt;Richard Feldman.&lt;/a&gt; I
+  think it goes into a lot of what made Roc stand out for me, namely:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;The philosophy of &amp;#8220;platforms&amp;#8221;, which allows you to change &lt;i&gt;how&lt;/i&gt;
+    your code interacts with the rest of the world. Want a
+    high-performance server implementation? Write the low-level IO in
+    rust and plug in the logic in Roc. The advantage of this approach
+    is that you can use &amp;#8220;the right tool for the job&amp;#8221;, and even go so
+    far as to create a platform for a game or an app that allows
+    users to safely script in Roc.&lt;/li&gt;
+  &lt;li&gt;A focus on performance: Roc is tapping into cutting edge research
+    to make functional programming with immutable data structures
+    almost as fast as writing low level procedural code. Don&amp;#8217;t
+    believe me? &lt;a href=&quot;https://youtu.be/vzfy4EKwG_Y&quot;&gt;Watch this.&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Pure FP with effects and structural typing.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;Why Roc?&lt;/h1&gt;
+&lt;p&gt;I&amp;#8217;m sure all I&amp;#8217;ve mentioned so far would&amp;#8217;ve at least piqued your
+  interest if you like functional programming, as it did to me when I
+  first learned about Roc. But while Roc is promising, it is not yet
+  &lt;i&gt;ready&lt;/i&gt;. As the website mentions, Roc is still under development,
+  and definitely isn&amp;#8217;t production-ready. The compiler is still in its
+  early stages and in my first time messing around with roc code I ran
+  into some pretty inscrutable compiler errors, including a bug which
+  led to my code not even printing &amp;#8220;Hello, world!&amp;#8221; until I added an
+  &lt;code&gt;await&lt;/code&gt; &lt;i&gt;somewhere&lt;/i&gt;.&lt;/p&gt;
+&lt;p&gt;This is all fine and expected for a language that&amp;#8217;s so early in its
+  development, but why use it for advent of code? Well, the biggest
+  reason is that working with a very new language without the mature
+  stdlib or ecosystem of a Java or even F# is that it&amp;#8217;s a super
+  interesting challenge. In preparationf or this year&amp;#8217;s advent of
+  code, I did a few of last year&amp;#8217;s challenges in F#, and in most cases
+  I got the correct answer by wrangling together &lt;code&gt;File.ReadLines&lt;/code&gt;,
+  regexes and &lt;code&gt;Seq&lt;/code&gt; functions. It almost felt like cheating. Here&amp;#8217;s
+  one of my solutions in F#:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INPUT_PATH&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&amp;gt;&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ReadLines&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&amp;gt;&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Seq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapi&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;idx&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;currentIndex&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;idx&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;currentIndex&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&amp;gt;&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Seq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;sc&quot;&gt;&amp;#39;#&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&amp;gt;&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Seq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;printfn&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;%d&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;;)&lt;/p&gt;</content><author><name>Shrikanth Upadhayaya</name></author><category term="meta" /><summary type="html">Welcome to our blog! Here, you can catch up on stuff we&amp;#8217;ve been toying with, what we&amp;#8217;ve learned in the process and stuff that, hopefully, you can take away something from that. The Details This blog is currently hosted on github pages CNAMED to our domain. We try to make website completely usable without any javascript; if you notice issues with javascript disabled, please let us know. Comments are via giscus, and require javascript. Our stack uses jekyll, with our theme being forked from parchment. Our choice of jekyll was motivated by its extensibility and our prior experience with ruby. Since the two of us write in different formats (markdown and org mode, for example) we couldn&amp;#8217;t go with a system that didn&amp;#8217;t at least support the two, and hugo wasn&amp;#8217;t a good fit for us since we&amp;#8217;re not as comfortable maintaining templates in its syntax. What&amp;#8217;s coming? In the near future, we&amp;#8217;ll be writing on Phoenix and Kotlin Multiplatform, and beyond that wherever our technical adventures take us. That&amp;#8217;s it for now. Before we leave, here&amp;#8217;s a funny snippet: config.aws_shared_credential_path = ( ENV[&amp;#39;AWS_SHARED_CREDENTIAL_PATH&amp;#39;] unless ENV[&amp;#39;AWS_CREDS_IN_SECRETS&amp;#39;] then &amp;#39;/run/secrets/aws_credentials&amp;#39; ) ;)</summary></entry></feed>
+&lt;p&gt;I definitely can&amp;#8217;t do that in Roc, if only because proper support
+  for File I/O in the CLI platform is just coming into shape. Writing
+  more low-level code in a functional langauge is exactly the kind of
+  challenge I want to take up!&lt;/p&gt;
+&lt;p&gt;Apart from that, I&amp;#8217;m looking forward to stress testing the roc
+  compiler as a user: What went wrong? What was I expecting? Why did
+  it not work that way? and reporting it to the team so they can make
+  it better. Heck, this might be what finally gets me into the depths
+  of compilers!&lt;/p&gt;
+&lt;h1&gt;What&amp;#8217;s coming?&lt;/h1&gt;
+&lt;p&gt;I&amp;#8217;ll &lt;i&gt;try&lt;/i&gt; to solve each AoC challenge on the day it comes out, but
+  due to work and so on I don&amp;#8217;t think I&amp;#8217;ll be able to meet that
+  goal. I&amp;#8217;ll definitely catch up to the ones I&amp;#8217;ve missed over the
+  weekends. Additionally, I&amp;#8217;ll try to write a blog post for each
+  solution where I had challenges with roc more than with the logic of
+  the solution.&lt;/p&gt;
+&lt;p&gt;Well, that&amp;#8217;s it for now. We&amp;#8217;re off to the races!&lt;/p&gt;</content><author><name>Shrikanth Upadhayaya</name></author><category term="aoc" /><category term="roc" /><category term="fp" /><category term="programming" /><summary type="html">Hello there! I&amp;#8217;ve been planning to write a blog for a while - I&amp;#8217;ve usually got more than a few thoughts kicking around in my head that would do me better if I wrote them down somewhere - but I think I&amp;#8217;ve finally found a good reason to kick start it: advent of code and roc. What&amp;#8217;s Roc? Roc is a new and not yet released functional programming language. If you look at it purely from a syntax/features point of view, you might not find anything interesting about it, but I invite you to check out this talk by its creator, Richard Feldman. I think it goes into a lot of what made Roc stand out for me, namely: The philosophy of &amp;#8220;platforms&amp;#8221;, which allows you to change how your code interacts with the rest of the world. Want a high-performance server implementation? Write the low-level IO in rust and plug in the logic in Roc. The advantage of this approach is that you can use &amp;#8220;the right tool for the job&amp;#8221;, and even go so far as to create a platform for a game or an app that allows users to safely script in Roc. A focus on performance: Roc is tapping into cutting edge research to make functional programming with immutable data structures almost as fast as writing low level procedural code. Don&amp;#8217;t believe me? Watch this. Pure FP with effects and structural typing. Why Roc? I&amp;#8217;m sure all I&amp;#8217;ve mentioned so far would&amp;#8217;ve at least piqued your interest if you like functional programming, as it did to me when I first learned about Roc. But while Roc is promising, it is not yet ready. As the website mentions, Roc is still under development, and definitely isn&amp;#8217;t production-ready. The compiler is still in its early stages and in my first time messing around with roc code I ran into some pretty inscrutable compiler errors, including a bug which led to my code not even printing &amp;#8220;Hello, world!&amp;#8221; until I added an await somewhere. This is all fine and expected for a language that&amp;#8217;s so early in its development, but why use it for advent of code? Well, the biggest reason is that working with a very new language without the mature stdlib or ecosystem of a Java or even F# is that it&amp;#8217;s a super interesting challenge. In preparationf or this year&amp;#8217;s advent of code, I did a few of last year&amp;#8217;s challenges in F#, and in most cases I got the correct answer by wrangling together File.ReadLines, regexes and Seq functions. It almost felt like cheating. Here&amp;#8217;s one of my solutions in F#: INPUT_PATH |&amp;gt; File.ReadLines |&amp;gt; Seq.mapi (fun idx line -&amp;gt; let currentIndex = idx * 3 % String.length line line.[currentIndex]) |&amp;gt; Seq.filter (fun ch -&amp;gt; ch = &amp;#39;#&amp;#39;) |&amp;gt; Seq.length |&amp;gt; printfn &amp;quot;%d&amp;quot; I definitely can&amp;#8217;t do that in Roc, if only because proper support for File I/O in the CLI platform is just coming into shape. Writing more low-level code in a functional langauge is exactly the kind of challenge I want to take up! Apart from that, I&amp;#8217;m looking forward to stress testing the roc compiler as a user: What went wrong? What was I expecting? Why did it not work that way? and reporting it to the team so they can make it better. Heck, this might be what finally gets me into the depths of compilers! What&amp;#8217;s coming? I&amp;#8217;ll try to solve each AoC challenge on the day it comes out, but due to work and so on I don&amp;#8217;t think I&amp;#8217;ll be able to meet that goal. I&amp;#8217;ll definitely catch up to the ones I&amp;#8217;ve missed over the weekends. Additionally, I&amp;#8217;ll try to write a blog post for each solution where I had challenges with roc more than with the logic of the solution. Well, that&amp;#8217;s it for now. We&amp;#8217;re off to the races!</summary></entry></feed>

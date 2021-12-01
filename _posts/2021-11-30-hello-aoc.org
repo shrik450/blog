@@ -1,0 +1,81 @@
+#+TITLE: Hello, Advent of Code!
+#+LAYOUT: post
+#+tags: aoc roc fp programming
+
+Hello there! I've been planning to write a blog for a while - I've
+usually got more than a few thoughts kicking around in my head that
+would do me better if I wrote them down somewhere - but I think I've
+finally found a good reason to kick start it: advent of code and roc.
+
+* What's Roc?
+  [[https://www.roc-lang.org/][Roc]] is a new and not yet released functional programming
+  language. If you look at it purely from a syntax/features point of
+  view, you might not find anything interesting about it, but I invite
+  you to check out [[https://www.youtube.com/watch?v=cpQwtwVKAfU][this talk]] by its creator, [[https://twitter.com/rtfeldman][Richard Feldman.]] I
+  think it goes into a lot of what made Roc stand out for me, namely:
+
+  1. The philosophy of "platforms", which allows you to change /how/
+     your code interacts with the rest of the world. Want a
+     high-performance server implementation? Write the low-level IO in
+     rust and plug in the logic in Roc. The advantage of this approach
+     is that you can use "the right tool for the job", and even go so
+     far as to create a platform for a game or an app that allows
+     users to safely script in Roc.
+  2. A focus on performance: Roc is tapping into cutting edge research
+     to make functional programming with immutable data structures
+     almost as fast as writing low level procedural code. Don't
+     believe me? [[https://youtu.be/vzfy4EKwG_Y][Watch this.]]
+  3. Pure FP with effects and structural typing.
+
+* Why Roc?
+  I'm sure all I've mentioned so far would've at least piqued your
+  interest if you like functional programming, as it did to me when I
+  first learned about Roc. But while Roc is promising, it is not yet
+  /ready/. As the website mentions, Roc is still under development,
+  and definitely isn't production-ready. The compiler is still in its
+  early stages and in my first time messing around with roc code I ran
+  into some pretty inscrutable compiler errors, including a bug which
+  led to my code not even printing "Hello, world!" until I added an
+  =await= /somewhere/.
+
+  This is all fine and expected for a language that's so early in its
+  development, but why use it for advent of code? Well, the biggest
+  reason is that working with a very new language without the mature
+  stdlib or ecosystem of a Java or even F# is that it's a super
+  interesting challenge. In preparationf or this year's advent of
+  code, I did a few of last year's challenges in F#, and in most cases
+  I got the correct answer by wrangling together =File.ReadLines=,
+  regexes and =Seq= functions. It almost felt like cheating. Here's
+  one of my solutions in F#:
+
+  #+begin_src fsharp
+    INPUT_PATH
+    |> File.ReadLines
+    |> Seq.mapi (fun idx line ->
+        let currentIndex = idx * 3 % String.length line
+        line.[currentIndex])
+    |> Seq.filter (fun ch -> ch = '#')
+    |> Seq.length
+    |> printfn "%d"
+  #+end_src
+
+  I definitely can't do that in Roc, if only because proper support
+  for File I/O in the CLI platform is just coming into shape. Writing
+  more low-level code in a functional langauge is exactly the kind of
+  challenge I want to take up!
+
+  Apart from that, I'm looking forward to stress testing the roc
+  compiler as a user: What went wrong? What was I expecting? Why did
+  it not work that way? and reporting it to the team so they can make
+  it better. Heck, this might be what finally gets me into the depths
+  of compilers!
+
+* What's coming?
+  I'll /try/ to solve each AoC challenge on the day it comes out, but
+  due to work and so on I don't think I'll be able to meet that
+  goal. I'll definitely catch up to the ones I've missed over the
+  weekends. Additionally, I'll try to write a blog post for each
+  solution where I had challenges with roc more than with the logic of
+  the solution.
+
+  Well, that's it for now. We're off to the races!
