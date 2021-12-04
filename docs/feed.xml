@@ -1,4 +1,198 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.shrikanthup.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.shrikanthup.com/" rel="alternate" type="text/html" /><updated>2021-12-01T07:36:39+05:30</updated><id>https://blog.shrikanthup.com/feed.xml</id><title type="html">Reflections</title><author><name>Shrikanth Upadhayaya</name></author><entry><title type="html">Hello, Advent of Code!</title><link href="https://blog.shrikanthup.com/2021-11-30-hello-aoc/" rel="alternate" type="text/html" title="Hello, Advent of Code!" /><published>2021-11-30T00:00:00+05:30</published><updated>2021-11-30T00:00:00+05:30</updated><id>https://blog.shrikanthup.com/hello-aoc</id><content type="html" xml:base="https://blog.shrikanthup.com/2021-11-30-hello-aoc/">&lt;p&gt;Hello there! I&amp;#8217;ve been planning to write a blog for a while - I&amp;#8217;ve
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="https://blog.shrikanthup.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.shrikanthup.com/" rel="alternate" type="text/html" /><updated>2021-12-04T09:09:38+05:30</updated><id>https://blog.shrikanthup.com/feed.xml</id><title type="html">Reflections</title><author><name>Shrikanth Upadhayaya</name></author><entry><title type="html">Ecto and Thinking About Data</title><link href="https://blog.shrikanthup.com/2021-12-04-ecto-data/" rel="alternate" type="text/html" title="Ecto and Thinking About Data" /><published>2021-12-04T00:00:00+05:30</published><updated>2021-12-04T00:00:00+05:30</updated><id>https://blog.shrikanthup.com/ecto-data</id><content type="html" xml:base="https://blog.shrikanthup.com/2021-12-04-ecto-data/">&lt;h1&gt;Two Stories&lt;/h1&gt;
+&lt;p&gt;Before I begin, here are two stories.&lt;/p&gt;
+&lt;h2&gt;A Story of Phoenix&lt;/h2&gt;
+&lt;p&gt;I picked up Phoenix for a pet project. To get my bearings, I wrote a
+  few basic models, wired them together in ecto, and opened IEx to
+  play around with them. I loaded a user:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Repo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;132da914-c227-46d2-a1f0-ba8cc8292065&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Accounts.User&amp;lt;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#   __meta__: #Ecto.Schema.Metadata&amp;lt;:loaded, &amp;quot;users&amp;quot;&amp;gt;,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#   id: &amp;quot;132da914-c227-46d2-a1f0-ba8cc8292065&amp;quot;,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#   inserted_at: ~N[2021-11-16 05:51:16],&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#   rooms: #Ecto.Association.NotLoaded&amp;lt;association :rooms is not loaded&amp;gt;,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#   updated_at: ~N[2021-11-16 05:51:16],&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#   username: &amp;quot;user&amp;quot;,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#   ...&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# &amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Huh, that &lt;code&gt;#Ecto.Association.NotLoaded&lt;/code&gt; bit stuck out to me. Of
+  course, even Rails does that, so I wasn&amp;#8217;t surprised. But I wanted to
+  know how Ecto would handle me trying use it:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rooms&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#Ecto.Association.NotLoaded&amp;lt;association :rooms is not loaded&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;What? No magic loading, no figuring out what I want and bending to
+  submit to it? In Rails, if I loaded a user and then tried to use a
+  association, it would automatically run a query and fill that relation
+  in, ready for use. I wondered why the Ecto struct even had that
+  field, so I looked it up: if you want to use association fields, you
+  &lt;i&gt;have&lt;/i&gt; to preload them.&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;What&lt;/i&gt;, I thought to myself. If there were two classes (not in the
+  programming sense) of the User struct - one with the relations
+  preloaded and one not - that meant that I could never unambiguously
+  reason about a User struct I received without strongly tied
+  context. Therefore, I would have to make two types of functions -
+  ones that expected the relation to be present, and ones that
+  didn&amp;#8217;t - and let the caller figure out which one to call. That&amp;#8217;s
+  insane, who would do that?&lt;/p&gt;
+&lt;h2&gt;A Story of Rails&lt;/h2&gt;
+&lt;p&gt;I&amp;#8217;ve professionally worked on a Rails service for two years, and
+  even since then I&amp;#8217;ve loved using it whenever I wanted to make an
+  app. With Rails (and now, Turbo), I can simply build something,
+  deploy it on a cheap machine and use it from anywhere without having
+  to think about frontends or app distribution.&lt;/p&gt;
+&lt;p&gt;Because I&amp;#8217;ve worked on Rails professionally, I&amp;#8217;ve also had to face
+  a variety of situations that come from large scale use. One time, a
+  User complained that some flows on our app were sluggish, so we
+  profiled our performance to figure out why they were so slow.
+  Eventually, we found that in many cases, we were gathering and
+  serializing &lt;i&gt;way&lt;/i&gt; too much data.&lt;/p&gt;
+&lt;p&gt;I can&amp;#8217;t reproduce the actual details, but consider a &lt;code&gt;User&lt;/code&gt; model
+  that has a bunch of associations and some properties that are
+  calculated based on them. We found out that our default endpoint
+  was calculating too many things that weren&amp;#8217;t actually useful for
+  some use cases. This included properties that required, say, a
+  heavy SQL query or expensive calculations.&lt;/p&gt;
+&lt;p&gt;To solve this, we broke apart the use cases where the client would
+  want this data, and wrote specific endpoints for them. In these
+  endpoints, we only ever calculated things that were &lt;i&gt;required&lt;/i&gt;, and
+  sometimes that meant using every trick in the ActiveRecord book.
+  For example, we used &lt;code&gt;select&lt;/code&gt; to load only specific fields from a
+  join and receive an object we could get &lt;i&gt;only&lt;/i&gt; those specific
+  fields from. For example, you can do this:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_rooms&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;joins&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:rooms&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;user.id AS user_id, rooms.id AS room_id&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;user_rooms&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;first&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; only has the properties user_id and room_id.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Of course, the methods we wrote that worked on these objects could
+  only ever work with them, as they weren&amp;#8217;t your usual records. So we
+  marked those methods clearly with documentation to be clear about
+  the preconditions of these functions.&lt;/p&gt;
+&lt;p&gt;In short, we wrote a bunch of functions that operated on specific
+  classes of records where we couldn&amp;#8217;t reason about the data we got
+  without strongly tied context.&lt;/p&gt;
+&lt;h1&gt;Data Oriented Programming&lt;/h1&gt;
+&lt;p&gt;In his &lt;a href=&quot;https://www.youtube.com/watch?v=rX0ItVEVjHc&quot;&gt;talk on &amp;#8220;Data-Oriented Design and C++&amp;#8221;&lt;/a&gt;, Mike Acton speaks of
+  three lies about programming that have become norm in the community
+  and three corresponding truths to correct those beliefs. If you
+  haven&amp;#8217;t watched that talk yet, go on, watch it now. It&amp;#8217;s far more
+  insightful than anything I can tell you, and whether you agree with
+  his approach or not it&amp;#8217;s a useful idea to have in your toolkit.&lt;/p&gt;
+&lt;p&gt;It&amp;#8217;s a bit weird to consider that talk in the context of a slow,
+  interpreted and garbage collected language, especially since a lot
+  of the talk is about hardware and cache lines and so on. But I think
+  there are few takeaways that apply universally:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;At its core, every program is a transfromation of data from one
+    form to another.&lt;/li&gt;
+  &lt;li&gt;That means the &lt;b&gt;data&lt;/b&gt; is the core of the program.&lt;/li&gt;
+  &lt;li&gt;Therefore, the code and how we model it is &lt;b&gt;not&lt;/b&gt; more important
+    than data - it should be the other way around.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Later in the talk, he goes on to dissect an issue with an Object
+  Oriented game engine, and in one example he specifically points out
+  that a class was written with no concern to who would be &lt;i&gt;reading&lt;/i&gt;
+  the data. This, I think, is the most important conclusion that
+  follows from the three takeaways above: you should always be
+  considering who will be reading the data you load.&lt;/p&gt;
+&lt;h1&gt;ActiveRecord&lt;/h1&gt;
+&lt;p&gt;I love ActiveRecord. Especially when I was just cutting my teeth in
+  web development, ActiveRecord made it super easy to reason about my
+  data model. And when I grew more and more experienced and wanted
+  more specific outcomes, I could always use AR as a query builder and
+  dip into Arel to make queries that were not brittle to data model
+  changes.&lt;/p&gt;
+&lt;p&gt;But the problem with ActiveRecord is &lt;i&gt;exactly&lt;/i&gt; that it privileges
+  your understanding of code over data. This is a billed feature of
+  ORMs: you get to avoid having to think of your data as pesky rows,
+  and you instead have pristine objects with all the joy of how you&amp;#8217;ve
+  modelled them in your code.&lt;/p&gt;
+&lt;p&gt;Perhaps the most frequent issue that comes out of this is what I&amp;#8217;ve
+  heard described as &amp;#8220;seeing stars&amp;#8221; - most common interactions in AR
+  involve loading &lt;i&gt;every&lt;/i&gt; field of your record, even if you don&amp;#8217;t need
+  them all. I can&amp;#8217;t even keep count of the number of times I casually
+  loaded a bunch of records, and used maybe one or two methods on them
+  or used them just to load a relation. This gets worse when you want
+  to load a bunch of records and their associations - by default, the
+  Rails tool for this is &lt;code&gt;includes&lt;/code&gt; - and it loads every field of the
+  parent records &lt;i&gt;and&lt;/i&gt; of the associations!&lt;/p&gt;
+&lt;p&gt;And it&amp;#8217;s not just about loading fields. If I get a &lt;code&gt;User&lt;/code&gt; object and
+  mindlessly access an association on it, AR will helpfully load it,
+  and in the process often cause an N+1 query. Basically, AR&amp;#8217;s ease of
+  use and privileging of your objects over the data you need hides two
+  important facts:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;You&amp;#8217;re hitting an &lt;i&gt;edge&lt;/i&gt; of your system. To get data, you need to
+    go out of your Ruby process, and reach into your database. This
+    is very, very slow (relatively, of course).&lt;/li&gt;
+  &lt;li&gt;You don&amp;#8217;t &lt;i&gt;need&lt;/i&gt; objects, you need data. Often the data you want
+    is across tables - and therefore, across objects - so in the AR
+    world, by default, you must load lots of objects.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;It&amp;#8217;s easy to see why AR does this. If you&amp;#8217;re a Ruby programmer, you
+  reason in objects, and therefore it&amp;#8217;s easier for you to think &amp;#8220;this
+  is what I must do to these objects to get what I want&amp;#8221;. This is the
+  thinking that led to the &amp;#8220;Fat Models&amp;#8221; approach, where you fill your
+  model classes with methods that operate on its properties based on
+  your business logic. But that&amp;#8217;s exactly the problem: you&amp;#8217;re tying
+  your data processing to the &lt;i&gt;objects&lt;/i&gt;, not the data. The key issue
+  here - everywhere - is that you&amp;#8217;re never thinking about where and
+  why you&amp;#8217;re reading data.&lt;/p&gt;
+&lt;p&gt;Of course, as we did when we ran into this issue, you can &lt;i&gt;always&lt;/i&gt;
+  make AR work as a query builder and load only specific fields, and
+  many Rails programmers are doing that! But the issue with AR &lt;i&gt;is&lt;/i&gt; that
+  you don&amp;#8217;t realize it&amp;#8217;s a problem: its helpfulness is a poisoned
+  chalice, keeping you from thinking about usage until you get to a
+  breaking point.&lt;/p&gt;
+&lt;h1&gt;Ecto&lt;/h1&gt;
+&lt;p&gt;Ecto, the database access layer bundled in Phoenix, isn&amp;#8217;t an ORM,
+  not least because Elixir is a functional language and doesn&amp;#8217;t have
+  objects. It doesn&amp;#8217;t solve all the problems I mention here - you&amp;#8217;re
+  still often thinking about &lt;i&gt;structs&lt;/i&gt; intead of &lt;i&gt;objects&lt;/i&gt; - but the
+  thing that makes all the difference to me is that by virtue of being
+  functional, Ecto makes you think a lot more about the data.&lt;/p&gt;
+&lt;p&gt;The examples I posted at the beginning of this post show that - if
+  you want to load an association, you have to do it manually, and
+  therefore you&amp;#8217;re more considerate of whether you need it or
+  not. Ecto makes you painfully aware that you&amp;#8217;re hitting an edge of
+  your app, and if you load less data than you actually need now
+  you&amp;#8217;ll have to hit that edge again later. So you&amp;#8217;re now thinking
+  about the reader. How much data does the reader need? What fields do
+  I need?  Maybe I don&amp;#8217;t need to preload the association, and I can
+  load just data in my query?&lt;/p&gt;
+&lt;p&gt;While this &amp;#8220;strongly&amp;#8221; ties your reading functions to your data
+  loading functions, I think that&amp;#8217;s entirely fine - in many cases, you
+  will only ever use that function in one context. So isntead of
+  worryign about hypotheticals you can write tight, performant data
+  pipelines for your actual uses. And in many cases, because all of
+  your logic is in pure functions, if you do want to support multiple
+  contexts, you can safely refactor that away.&lt;/p&gt;
+&lt;p&gt;The pure functions on modules instead of methods on objects also
+  mean that you don&amp;#8217;t even need structs - you can take naked ids or
+  just properties, do your calculations and return. This allow you to
+  write code that&amp;#8217;s much more driven by the data than how you&amp;#8217;ve
+  modelled it. &lt;i&gt;And&lt;/i&gt;, when you refactor processing logic out of data
+  fetching logic, you can write functions that operate just on the
+  properties you want, making you even more aware of the data you
+  read.&lt;/p&gt;
+&lt;p&gt;Plus, Ecto is primarily a query builder, with a powerful and elegant
+  syntax for writing queries. I&amp;#8217;ve never bought the argument against
+  query builders, that they hide SQL from you - I think good query
+  builders allow you to basically write SQL while shielding you from
+  the harms and annoyances, like SQL injection or moving data between
+  your programming language and SQL. Even while using AR I learned a
+  lot of SQL simply by optimizing the AR queries I wrote, and I think
+  ecto is even better at giving you all the power of SQL.&lt;/p&gt;
+&lt;p&gt;At this point, I find how much I&amp;#8217;m moving away from AR and towards
+  query builders like Ecto kind of funny. ORMs have been described as
+  the &lt;a href=&quot;https://blogs.tedneward.com/post/the-vietnam-of-computer-science/&quot;&gt;Vietnam of Computer Science&lt;/a&gt; - but perhaps a better analogy would
+  be history itself: every passing generation is doomed to fall in
+  love with ORMs, and then rediscover the painful lessons of using
+  them. I know I have.&lt;/p&gt;</content><author><name>Shrikanth Upadhayaya</name></author><category term="elixir" /><category term="phoenix" /><category term="rails" /><category term="dod" /><summary type="html">Two Stories Before I begin, here are two stories. A Story of Phoenix I picked up Phoenix for a pet project. To get my bearings, I wrote a few basic models, wired them together in ecto, and opened IEx to play around with them. I loaded a user: user = Repo.get(User, &amp;quot;132da914-c227-46d2-a1f0-ba8cc8292065&amp;quot;)</summary></entry><entry><title type="html">Hello, Advent of Code!</title><link href="https://blog.shrikanthup.com/2021-11-30-hello-aoc/" rel="alternate" type="text/html" title="Hello, Advent of Code!" /><published>2021-11-30T00:00:00+05:30</published><updated>2021-11-30T00:00:00+05:30</updated><id>https://blog.shrikanthup.com/hello-aoc</id><content type="html" xml:base="https://blog.shrikanthup.com/2021-11-30-hello-aoc/">&lt;p&gt;Hello there! I&amp;#8217;ve been planning to write a blog for a while - I&amp;#8217;ve
   usually got more than a few thoughts kicking around in my head that
   would do me better if I wrote them down somewhere - but I think I&amp;#8217;ve
   finally found a good reason to kick start it: advent of code and roc.&lt;/p&gt;

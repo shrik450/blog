@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+
+  <title>Ecto and Thinking About Data - Reflections</title>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="keywords"
+    content="blog, Shrikanth Upadhayaya, Reflections, jekyll"
+  />
+  <meta name="author" content="Shrikanth Upadhayaya" />
+
+  <meta name="description" content="" />
+  <link
+    href="https://fonts.googleapis.com/css?family=Inconsolata:400,700"
+    rel="stylesheet"
+    type="text/css"
+  />
+  <link rel="stylesheet" href="https://blog.shrikanthup.com/css/main.css" />
+  <link rel="stylesheet" href="https://blog.shrikanthup.com/css/syntax.css" />
+  <link rel="icon" type="image/ico" href="https://blog.shrikanthup.com/assets/favicon.ico" />
+  <link rel="shortcut-icon" type="image/ico" href="https://blog.shrikanthup.com/assets/favicon.ico" />
+
+  <!-- For Facebook -->
+  <meta property="og:title" content="Ecto and Thinking About Data - Reflections" />
+  <meta property="og:image" itemprop="image" content="https://blog.shrikanthup.com/assets/favicon.ico" />
+  <meta property="og:description" content="" />
+
+  <!-- For Twitter -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Ecto and Thinking About Data - Reflections" />
+  <meta name="twitter:description" content="" />
+  <meta name="twitter:image" content="https://blog.shrikanthup.com/assets/favicon.ico" />
+</head>
+
+
+  <body>
+    <div class="container">
+      <div class="navbar">
+  <a class="site-title" href="https://blog.shrikanthup.com/">
+    Reflections
+  </a>
+
+  <ul class="pull-right">
+    
+  </ul>
+
+  <hr />
+</div>
+
+      <div class="page-title">Ecto and Thinking About Data</div>
+      <div class="content"><div class="page-subtitle">
+   
+  <b>[</b>
+  
+  <a href="/tags/#elixir" title="elixir">elixir</a>
+   ,   
+  <a href="/tags/#phoenix" title="phoenix">phoenix</a>
+   ,   
+  <a href="/tags/#rails" title="rails">rails</a>
+   ,   
+  <a href="/tags/#dod" title="dod">dod</a>
+  
+  <b>]</b>
+   
+</div>
+
+ <h1>Two Stories</h1>
+<p>Before I begin, here are two stories.</p>
+<h2>A Story of Phoenix</h2>
+<p>I picked up Phoenix for a pet project. To get my bearings, I wrote a
+  few basic models, wired them together in ecto, and opened IEx to
+  play around with them. I loaded a user:</p>
+<div class="highlight"><pre><span></span><span class="n">user</span> <span class="o">=</span> <span class="nc">Repo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nc">User</span><span class="p">,</span> <span class="s2">&quot;132da914-c227-46d2-a1f0-ba8cc8292065&quot;</span><span class="p">)</span>
+
+<span class="c1"># Accounts.User&lt;</span>
+<span class="c1">#   __meta__: #Ecto.Schema.Metadata&lt;:loaded, &quot;users&quot;&gt;,</span>
+<span class="c1">#   id: &quot;132da914-c227-46d2-a1f0-ba8cc8292065&quot;,</span>
+<span class="c1">#   inserted_at: ~N[2021-11-16 05:51:16],</span>
+<span class="c1">#   rooms: #Ecto.Association.NotLoaded&lt;association :rooms is not loaded&gt;,</span>
+<span class="c1">#   updated_at: ~N[2021-11-16 05:51:16],</span>
+<span class="c1">#   username: &quot;user&quot;,</span>
+<span class="c1">#   ...</span>
+<span class="c1"># &gt;</span>
+</pre></div>
+<p>Huh, that <code>#Ecto.Association.NotLoaded</code> bit stuck out to me. Of
+  course, even Rails does that, so I wasn&#8217;t surprised. But I wanted to
+  know how Ecto would handle me trying use it:</p>
+<div class="highlight"><pre><span></span><span class="n">user</span><span class="o">.</span><span class="n">rooms</span>
+
+<span class="c1">#Ecto.Association.NotLoaded&lt;association :rooms is not loaded&gt;</span>
+</pre></div>
+<p>What? No magic loading, no figuring out what I want and bending to
+  submit to it? In Rails, if I loaded a user and then tried to use a
+  association, it would automatically run a query and fill that relation
+  in, ready for use. I wondered why the Ecto struct even had that
+  field, so I looked it up: if you want to use association fields, you
+  <i>have</i> to preload them.</p>
+<p><i>What</i>, I thought to myself. If there were two classes (not in the
+  programming sense) of the User struct - one with the relations
+  preloaded and one not - that meant that I could never unambiguously
+  reason about a User struct I received without strongly tied
+  context. Therefore, I would have to make two types of functions -
+  ones that expected the relation to be present, and ones that
+  didn&#8217;t - and let the caller figure out which one to call. That&#8217;s
+  insane, who would do that?</p>
+<h2>A Story of Rails</h2>
+<p>I&#8217;ve professionally worked on a Rails service for two years, and
+  even since then I&#8217;ve loved using it whenever I wanted to make an
+  app. With Rails (and now, Turbo), I can simply build something,
+  deploy it on a cheap machine and use it from anywhere without having
+  to think about frontends or app distribution.</p>
+<p>Because I&#8217;ve worked on Rails professionally, I&#8217;ve also had to face
+  a variety of situations that come from large scale use. One time, a
+  User complained that some flows on our app were sluggish, so we
+  profiled our performance to figure out why they were so slow.
+  Eventually, we found that in many cases, we were gathering and
+  serializing <i>way</i> too much data.</p>
+<p>I can&#8217;t reproduce the actual details, but consider a <code>User</code> model
+  that has a bunch of associations and some properties that are
+  calculated based on them. We found out that our default endpoint
+  was calculating too many things that weren&#8217;t actually useful for
+  some use cases. This included properties that required, say, a
+  heavy SQL query or expensive calculations.</p>
+<p>To solve this, we broke apart the use cases where the client would
+  want this data, and wrote specific endpoints for them. In these
+  endpoints, we only ever calculated things that were <i>required</i>, and
+  sometimes that meant using every trick in the ActiveRecord book.
+  For example, we used <code>select</code> to load only specific fields from a
+  join and receive an object we could get <i>only</i> those specific
+  fields from. For example, you can do this:</p>
+<div class="highlight"><pre><span></span><span class="n">user_rooms</span> <span class="o">=</span>
+  <span class="no">User</span>
+    <span class="o">.</span><span class="n">joins</span><span class="p">(</span><span class="ss">:rooms</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;user.id AS user_id, rooms.id AS room_id&quot;</span><span class="p">)</span>
+<span class="n">user_rooms</span><span class="o">.</span><span class="n">first</span> <span class="c1"># =&gt; only has the properties user_id and room_id.</span>
+</pre></div>
+<p>Of course, the methods we wrote that worked on these objects could
+  only ever work with them, as they weren&#8217;t your usual records. So we
+  marked those methods clearly with documentation to be clear about
+  the preconditions of these functions.</p>
+<p>In short, we wrote a bunch of functions that operated on specific
+  classes of records where we couldn&#8217;t reason about the data we got
+  without strongly tied context.</p>
+<h1>Data Oriented Programming</h1>
+<p>In his <a href="https://www.youtube.com/watch?v=rX0ItVEVjHc">talk on &#8220;Data-Oriented Design and C++&#8221;</a>, Mike Acton speaks of
+  three lies about programming that have become norm in the community
+  and three corresponding truths to correct those beliefs. If you
+  haven&#8217;t watched that talk yet, go on, watch it now. It&#8217;s far more
+  insightful than anything I can tell you, and whether you agree with
+  his approach or not it&#8217;s a useful idea to have in your toolkit.</p>
+<p>It&#8217;s a bit weird to consider that talk in the context of a slow,
+  interpreted and garbage collected language, especially since a lot
+  of the talk is about hardware and cache lines and so on. But I think
+  there are few takeaways that apply universally:</p>
+<ol>
+  <li>At its core, every program is a transfromation of data from one
+    form to another.</li>
+  <li>That means the <b>data</b> is the core of the program.</li>
+  <li>Therefore, the code and how we model it is <b>not</b> more important
+    than data - it should be the other way around.</li>
+</ol>
+<p>Later in the talk, he goes on to dissect an issue with an Object
+  Oriented game engine, and in one example he specifically points out
+  that a class was written with no concern to who would be <i>reading</i>
+  the data. This, I think, is the most important conclusion that
+  follows from the three takeaways above: you should always be
+  considering who will be reading the data you load.</p>
+<h1>ActiveRecord</h1>
+<p>I love ActiveRecord. Especially when I was just cutting my teeth in
+  web development, ActiveRecord made it super easy to reason about my
+  data model. And when I grew more and more experienced and wanted
+  more specific outcomes, I could always use AR as a query builder and
+  dip into Arel to make queries that were not brittle to data model
+  changes.</p>
+<p>But the problem with ActiveRecord is <i>exactly</i> that it privileges
+  your understanding of code over data. This is a billed feature of
+  ORMs: you get to avoid having to think of your data as pesky rows,
+  and you instead have pristine objects with all the joy of how you&#8217;ve
+  modelled them in your code.</p>
+<p>Perhaps the most frequent issue that comes out of this is what I&#8217;ve
+  heard described as &#8220;seeing stars&#8221; - most common interactions in AR
+  involve loading <i>every</i> field of your record, even if you don&#8217;t need
+  them all. I can&#8217;t even keep count of the number of times I casually
+  loaded a bunch of records, and used maybe one or two methods on them
+  or used them just to load a relation. This gets worse when you want
+  to load a bunch of records and their associations - by default, the
+  Rails tool for this is <code>includes</code> - and it loads every field of the
+  parent records <i>and</i> of the associations!</p>
+<p>And it&#8217;s not just about loading fields. If I get a <code>User</code> object and
+  mindlessly access an association on it, AR will helpfully load it,
+  and in the process often cause an N+1 query. Basically, AR&#8217;s ease of
+  use and privileging of your objects over the data you need hides two
+  important facts:</p>
+<ol>
+  <li>You&#8217;re hitting an <i>edge</i> of your system. To get data, you need to
+    go out of your Ruby process, and reach into your database. This
+    is very, very slow (relatively, of course).</li>
+  <li>You don&#8217;t <i>need</i> objects, you need data. Often the data you want
+    is across tables - and therefore, across objects - so in the AR
+    world, by default, you must load lots of objects.</li>
+</ol>
+<p>It&#8217;s easy to see why AR does this. If you&#8217;re a Ruby programmer, you
+  reason in objects, and therefore it&#8217;s easier for you to think &#8220;this
+  is what I must do to these objects to get what I want&#8221;. This is the
+  thinking that led to the &#8220;Fat Models&#8221; approach, where you fill your
+  model classes with methods that operate on its properties based on
+  your business logic. But that&#8217;s exactly the problem: you&#8217;re tying
+  your data processing to the <i>objects</i>, not the data. The key issue
+  here - everywhere - is that you&#8217;re never thinking about where and
+  why you&#8217;re reading data.</p>
+<p>Of course, as we did when we ran into this issue, you can <i>always</i>
+  make AR work as a query builder and load only specific fields, and
+  many Rails programmers are doing that! But the issue with AR <i>is</i> that
+  you don&#8217;t realize it&#8217;s a problem: its helpfulness is a poisoned
+  chalice, keeping you from thinking about usage until you get to a
+  breaking point.</p>
+<h1>Ecto</h1>
+<p>Ecto, the database access layer bundled in Phoenix, isn&#8217;t an ORM,
+  not least because Elixir is a functional language and doesn&#8217;t have
+  objects. It doesn&#8217;t solve all the problems I mention here - you&#8217;re
+  still often thinking about <i>structs</i> intead of <i>objects</i> - but the
+  thing that makes all the difference to me is that by virtue of being
+  functional, Ecto makes you think a lot more about the data.</p>
+<p>The examples I posted at the beginning of this post show that - if
+  you want to load an association, you have to do it manually, and
+  therefore you&#8217;re more considerate of whether you need it or
+  not. Ecto makes you painfully aware that you&#8217;re hitting an edge of
+  your app, and if you load less data than you actually need now
+  you&#8217;ll have to hit that edge again later. So you&#8217;re now thinking
+  about the reader. How much data does the reader need? What fields do
+  I need?  Maybe I don&#8217;t need to preload the association, and I can
+  load just data in my query?</p>
+<p>While this &#8220;strongly&#8221; ties your reading functions to your data
+  loading functions, I think that&#8217;s entirely fine - in many cases, you
+  will only ever use that function in one context. So isntead of
+  worryign about hypotheticals you can write tight, performant data
+  pipelines for your actual uses. And in many cases, because all of
+  your logic is in pure functions, if you do want to support multiple
+  contexts, you can safely refactor that away.</p>
+<p>The pure functions on modules instead of methods on objects also
+  mean that you don&#8217;t even need structs - you can take naked ids or
+  just properties, do your calculations and return. This allow you to
+  write code that&#8217;s much more driven by the data than how you&#8217;ve
+  modelled it. <i>And</i>, when you refactor processing logic out of data
+  fetching logic, you can write functions that operate just on the
+  properties you want, making you even more aware of the data you
+  read.</p>
+<p>Plus, Ecto is primarily a query builder, with a powerful and elegant
+  syntax for writing queries. I&#8217;ve never bought the argument against
+  query builders, that they hide SQL from you - I think good query
+  builders allow you to basically write SQL while shielding you from
+  the harms and annoyances, like SQL injection or moving data between
+  your programming language and SQL. Even while using AR I learned a
+  lot of SQL simply by optimizing the AR queries I wrote, and I think
+  ecto is even better at giving you all the power of SQL.</p>
+<p>At this point, I find how much I&#8217;m moving away from AR and towards
+  query builders like Ecto kind of funny. ORMs have been described as
+  the <a href="https://blogs.tedneward.com/post/the-vietnam-of-computer-science/">Vietnam of Computer Science</a> - but perhaps a better analogy would
+  be history itself: every passing generation is doomed to fall in
+  love with ORMs, and then rediscover the painful lessons of using
+  them. I know I have.</p>
+ 
+</div>
+      <div class="footer">
+  <hr />
+  <a href="https://github.com/shrik450/blog">Powered by Jekyll. Theme forked from parchment.</a>
+</div>
+
+    </div>
+  </body>
+</html>
