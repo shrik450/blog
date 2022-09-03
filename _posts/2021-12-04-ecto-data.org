@@ -71,7 +71,7 @@ Before I begin, here are two stories.
    calculated based on them. We found out that our default endpoint
    was calculating too many things that weren't actually useful for
    some use cases. This included properties that required, say, a
-   heavy SQL query or expensive calculations.
+   heavy SQL query or expensive computations.
 
    To solve this, we broke apart the use cases where the client would
    want this data, and wrote specific endpoints for them. In these
@@ -199,7 +199,7 @@ Before I begin, here are two stories.
   While this "strongly" ties your reading functions to your data
   loading functions, I think that's entirely fine - in many cases, you
   will only ever use that function in one context. So isntead of
-  worryign about hypotheticals you can write tight, performant data
+  worrying about hypotheticals you can write tight, performant data
   pipelines for your actual uses. And in many cases, because all of
   your logic is in pure functions, if you do want to support multiple
   contexts, you can safely refactor that away.
