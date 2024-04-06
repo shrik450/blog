@@ -1,0 +1,230 @@
+#+TITLE: Ecto and Thinking About Data
+#+AUTHOR: Shrikanth Upadhayaya
+#+LAYOUT: post
+#+TAGS: elixir phoenix rails dod
+
+* Two Stories
+
+Before I begin, here are two stories.
+
+** A Story of Phoenix
+   I picked up Phoenix for a pet project. To get my bearings, I wrote a
+   few basic models, wired them together in ecto, and opened IEx to
+   play around with them. I loaded a user:
+
+   #+begin_src elixir
+     user = Repo.get(User, "132da914-c227-46d2-a1f0-ba8cc8292065")
+
+     # Accounts.User<
+     #   __meta__: #Ecto.Schema.Metadata<:loaded, "users">,
+     #   id: "132da914-c227-46d2-a1f0-ba8cc8292065",
+     #   inserted_at: ~N[2021-11-16 05:51:16],
+     #   rooms: #Ecto.Association.NotLoaded<association :rooms is not loaded>,
+     #   updated_at: ~N[2021-11-16 05:51:16],
+     #   username: "user",
+     #   ...
+     # >
+   #+end_src
+
+   Huh, that =#Ecto.Association.NotLoaded= bit stuck out to me. Of
+   course, even Rails does that, so I wasn't surprised. But I wanted to
+   know how Ecto would handle me trying use it:
+
+   #+begin_src elixir
+     user.rooms
+
+     #Ecto.Association.NotLoaded<association :rooms is not loaded>
+   #+end_src
+
+   What? No magic loading, no figuring out what I want and bending to
+   submit to it? In Rails, if I loaded a user and then tried to use a
+   association, it would automatically run a query and fill that relation
+   in, ready for use. I wondered why the Ecto struct even had that
+   field, so I looked it up: if you want to use association fields, you
+   /have/ to preload them.
+
+   /What/, I thought to myself. If there were two classes (not in the
+   programming sense) of the User struct - one with the relations
+   preloaded and one not - that meant that I could never unambiguously
+   reason about a User struct I received without strongly tied
+   context. Therefore, I would have to make two types of functions -
+   ones that expected the relation to be present, and ones that
+   didn't - and let the caller figure out which one to call. That's
+   insane, who would do that?
+
+** A Story of Rails
+   I've professionally worked on a Rails service for two years, and
+   even since then I've loved using it whenever I wanted to make an
+   app. With Rails (and now, Turbo), I can simply build something,
+   deploy it on a cheap machine and use it from anywhere without having
+   to think about frontends or app distribution.
+
+   Because I've worked on Rails professionally, I've also had to face
+   a variety of situations that come from large scale use. One time, a
+   User complained that some flows on our app were sluggish, so we
+   profiled our performance to figure out why they were so slow.
+   Eventually, we found that in many cases, we were gathering and
+   serializing /way/ too much data.
+
+   I can't reproduce the actual details, but consider a =User= model
+   that has a bunch of associations and some properties that are
+   calculated based on them. We found out that our default endpoint
+   was calculating too many things that weren't actually useful for
+   some use cases. This included properties that required, say, a
+   heavy SQL query or expensive computations.
+
+   To solve this, we broke apart the use cases where the client would
+   want this data, and wrote specific endpoints for them. In these
+   endpoints, we only ever calculated things that were /required/, and
+   sometimes that meant using every trick in the ActiveRecord book.
+   For example, we used =select= to load only specific fields from a
+   join and receive an object we could get /only/ those specific
+   fields from. For example, you can do this:
+
+   #+begin_src ruby
+     user_rooms =
+       User
+         .joins(:rooms)
+         .select("user.id AS user_id, rooms.id AS room_id")
+     user_rooms.first # => only has the properties user_id and room_id.
+   #+end_src
+
+   Of course, the methods we wrote that worked on these objects could
+   only ever work with them, as they weren't your usual records. So we
+   marked those methods clearly with documentation to be clear about
+   the preconditions of these functions.
+
+   In short, we wrote a bunch of functions that operated on specific
+   classes of records where we couldn't reason about the data we got
+   without strongly tied context.
+
+* Data Oriented Programming
+  In his [[https://www.youtube.com/watch?v=rX0ItVEVjHc][talk on "Data-Oriented Design and C++"]], Mike Acton speaks of
+  three lies about programming that have become norm in the community
+  and three corresponding truths to correct those beliefs. If you
+  haven't watched that talk yet, go on, watch it now. It's far more
+  insightful than anything I can tell you, and whether you agree with
+  his approach or not it's a useful idea to have in your toolkit.
+
+  It's a bit weird to consider that talk in the context of a slow,
+  interpreted and garbage collected language, especially since a lot
+  of the talk is about hardware and cache lines and so on. But I think
+  there are few takeaways that apply universally:
+
+  1. At its core, every program is a transfromation of data from one
+     form to another.
+  2. That means the *data* is the core of the program.
+  3. Therefore, the code and how we model it is *not* more important
+     than data - it should be the other way around.
+
+  Later in the talk, he goes on to dissect an issue with an Object
+  Oriented game engine, and in one example he specifically points out
+  that a class was written with no concern to who would be /reading/
+  the data. This, I think, is the most important conclusion that
+  follows from the three takeaways above: you should always be
+  considering who will be reading the data you load.
+
+* ActiveRecord
+  I love ActiveRecord. Especially when I was just cutting my teeth in
+  web development, ActiveRecord made it super easy to reason about my
+  data model. And when I grew more and more experienced and wanted
+  more specific outcomes, I could always use AR as a query builder and
+  dip into Arel to make queries that were not brittle to data model
+  changes.
+
+  But the problem with ActiveRecord is /exactly/ that it privileges
+  your understanding of code over data. This is a billed feature of
+  ORMs: you get to avoid having to think of your data as pesky rows,
+  and you instead have pristine objects with all the joy of how you've
+  modelled them in your code.
+
+  Perhaps the most frequent issue that comes out of this is what I've
+  heard described as "seeing stars" - most common interactions in AR
+  involve loading /every/ field of your record, even if you don't need
+  them all. I can't even keep count of the number of times I casually
+  loaded a bunch of records, and used maybe one or two methods on them
+  or used them just to load a relation. This gets worse when you want
+  to load a bunch of records and their associations - by default, the
+  Rails tool for this is =includes= - and it loads every field of the
+  parent records /and/ of the associations!
+
+  And it's not just about loading fields. If I get a =User= object and
+  mindlessly access an association on it, AR will helpfully load it,
+  and in the process often cause an N+1 query. Basically, AR's ease of
+  use and privileging of your objects over the data you need hides two
+  important facts:
+
+  1. You're hitting an /edge/ of your system. To get data, you need to
+     go out of your Ruby process, and reach into your database. This
+     is very, very slow (relatively, of course).
+  2. You don't /need/ objects, you need data. Often the data you want
+     is across tables - and therefore, across objects - so in the AR
+     world, by default, you must load lots of objects.
+
+  It's easy to see why AR does this. If you're a Ruby programmer, you
+  reason in objects, and therefore it's easier for you to think "this
+  is what I must do to these objects to get what I want". This is the
+  thinking that led to the "Fat Models" approach, where you fill your
+  model classes with methods that operate on its properties based on
+  your business logic. But that's exactly the problem: you're tying
+  your data processing to the /objects/, not the data. The key issue
+  here - everywhere - is that you're never thinking about where and
+  why you're reading data.
+
+  Of course, as we did when we ran into this issue, you can /always/
+  make AR work as a query builder and load only specific fields, and
+  many Rails programmers are doing that! But the issue with AR /is/ that
+  you don't realize it's a problem: its helpfulness is a poisoned
+  chalice, keeping you from thinking about usage until you get to a
+  breaking point.
+
+* Ecto
+  Ecto, the database access layer bundled in Phoenix, isn't an ORM,
+  not least because Elixir is a functional language and doesn't have
+  objects. It doesn't solve all the problems I mention here - you're
+  still often thinking about /structs/ intead of /objects/ - but the
+  thing that makes all the difference to me is that by virtue of being
+  functional, Ecto makes you think a lot more about the data.
+
+  The examples I posted at the beginning of this post show that - if
+  you want to load an association, you have to do it manually, and
+  therefore you're more considerate of whether you need it or
+  not. Ecto makes you painfully aware that you're hitting an edge of
+  your app, and if you load less data than you actually need now
+  you'll have to hit that edge again later. So you're now thinking
+  about the reader. How much data does the reader need? What fields do
+  I need?  Maybe I don't need to preload the association, and I can
+  load just data in my query?
+
+  While this "strongly" ties your reading functions to your data
+  loading functions, I think that's entirely fine - in many cases, you
+  will only ever use that function in one context. So isntead of
+  worrying about hypotheticals you can write tight, performant data
+  pipelines for your actual uses. And in many cases, because all of
+  your logic is in pure functions, if you do want to support multiple
+  contexts, you can safely refactor that away.
+
+  The pure functions on modules instead of methods on objects also
+  mean that you don't even need structs - you can take naked ids or
+  just properties, do your calculations and return. This allow you to
+  write code that's much more driven by the data than how you've
+  modelled it. /And/, when you refactor processing logic out of data
+  fetching logic, you can write functions that operate just on the
+  properties you want, making you even more aware of the data you
+  read.
+
+  Plus, Ecto is primarily a query builder, with a powerful and elegant
+  syntax for writing queries. I've never bought the argument against
+  query builders, that they hide SQL from you - I think good query
+  builders allow you to basically write SQL while shielding you from
+  the harms and annoyances, like SQL injection or moving data between
+  your programming language and SQL. Even while using AR I learned a
+  lot of SQL simply by optimizing the AR queries I wrote, and I think
+  ecto is even better at giving you all the power of SQL.
+
+  At this point, I find how much I'm moving away from AR and towards
+  query builders like Ecto kind of funny. ORMs have been described as
+  the [[https://blogs.tedneward.com/post/the-vietnam-of-computer-science/][Vietnam of Computer Science]] - but perhaps a better analogy would
+  be history itself: every passing generation is doomed to fall in
+  love with ORMs, and then rediscover the painful lessons of using
+  them. I know I have.
