@@ -1,7 +1,8 @@
 #+TITLE: Ecto and Thinking About Data
 #+AUTHOR: Shrikanth Upadhayaya
-#+LAYOUT: post
 #+TAGS: elixir phoenix rails dod
+
+Published December 4, 2021.
 
 * Two Stories
 
