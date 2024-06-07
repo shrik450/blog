@@ -77,11 +77,10 @@ conflicts, and they've happily kept chugging so far.
 ### Scaling up is easy
 
 It's really, really simple to refactor your scripts, split them into multiple
-files, use modules to encapsulate, etc. This is significantly easier than with
-Ruby because the type checking helps avoid mistakes when I refactor, and I'm a
-lot more confident with a complex script in F# than with Ruby. I still hate that
-you can't have cross-referencing definitions without using `and`, but for
-scripts this is relatively rare.
+files, use modules to encapsulate, etc. I'm a lot more confident with a complex
+script in F# than with Ruby because the type checking helps avoid mistakes when
+I refactor. I still hate that you can't have cross-referencing definitions
+without using `and`, but for scripts this is relatively rare.
 
 ## The Bad
 
@@ -132,9 +131,10 @@ as well, especially with pipelines, and requires a lot more boilerplate. [^3]
 
 For example, if you're using an OO-structured library, you often have to create
 objects to pass to it. If you're lucky, there's a builder or a fluent API for
-these, which makes it simpler, if not as convenient or composable as pipelining.
-In other cases it's just worse, and you have `<-`s everywhere to set fields. I
-wish there was at least something like Kotlin's `apply` to make this easier.
+these, which makes it simpler, but not as convenient or composable as
+pipelining. In other cases it's just worse, and you have `<-`s everywhere to set
+fields. I wish there was at least something like Kotlin's `apply` to make this
+easier.
 
 [^3]: F# 8.0 made this better with the `_` shorthand, but I wrote much of my F#
     scripts before that and I haven't had reason to write more F# scripts since
@@ -148,30 +148,45 @@ wish there was at least something like Kotlin's `apply` to make this easier.
 ### Exceptions everywhere
 
 I *hate hate hate* having to deal with exceptions from the standard library and
-NuGet packages. Exceptions break the "soundness" of the type system, meaning
-everything I like about ML ends up being less and less useful. They don't
-compose well, and intermixing a function that throws exceptions with functions
-that return results means writing and wrapping lots of boilerplate. 
+NuGet packages. Exceptions break the "completeness" of the type system, meaning
+everything I like about types ends up being less and less useful. To add insult
+to injury Intermixing a function that throws exceptions with functions that
+return results means writing and wrapping lots of boilerplate.
 
 This was the single biggest reason I scaled down my usage of F#. I'd write some
 code, notice that it didn't return a `Result` even thought it was fallible, sigh
 and write boilerplate to convert the exception into a result. Even worse was
 when I used a library and it threw an exception in runtime that I wasn't
 expecting. I was very tired of the boilerplate explosion, and with all the
-`try/with`s my scripts were becoming as cumbersome as Ruby or Python.
+`try/with`s my scripts were becoming as cumbersome as Ruby or Python. I thought
+I'd write less code, and more elegant code, by switching to an expressive
+language, but most of my code ended up being mostly the same as any other
+language.
 
 ## Conclusion
 
 As I mentioned, I ended up scaling down usage of F# for new scripts, usually in
 favour of Deno and Ruby. If it's something simple, I use ruby, and if it's more
-complex I use Deno with TS. I should stress that this doesn't mean that F# is
-*bad*. In my opinion, Deno[^4] with typescript is the most ergonomic environment
-for scripting, with all the advantages of F# and few disadvantages. And I say
-that despite JS/TS being a poor match for my aesthetics. F# compares really
-favourably to Deno, but the impedance mismatch between the language's aesthetics
-and the broader ecosystem it is in hurts me more than writing JS. Admittedly
-some of the F# 8 changes have caught my eye and made me excited to try it again
-for the more complex scripts I have on the horizon.
+complex I use Deno with TS. 
+
+I should stress that this doesn't mean that F# is *bad*. It's just that what's
+good about it either isn't as important or is outweighed by the annoyances. The
+expressivity is great, but you're going to write boilerplate anyway. The
+deployment story is wonderful, but so is Deno's. Type checking and refactoring
+are nice, but TS gets pretty close. And if I'm writing a script that can fit on
+one screen, Ruby is perhaps more expressive and so much more elegant.
+
+In my opinion, Deno[^4] with typescript is the most ergonomic environment for
+scripting. It has all the advantages of F# and few disadvantages. F# still
+compares really well, and I certainly don't regret writing any of the scripts I
+did with it, but every time I wanted to write a new script with F# I didn't
+think it would be worth dealing with. And I say that despite F# being the better
+match for my aesthetic preferences!
+
+However, some of the F# 8 changes have caught my eye and made me excited to try
+it again for the more complex scripts I have on the horizon. I'd be happy to
+check back in on this in another year, and see where I stand on scripting with
+F# then!
 
 
 [^4]: I haven't yet tried Bun, but I think it could be even better because my
