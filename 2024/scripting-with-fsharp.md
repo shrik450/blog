@@ -13,26 +13,26 @@ One of the advantages of scripting here is that I can write them in any
 language. The bulk of my scripts are in Ruby, my "first love" in programming,
 but I also extensively use JS (via Deno) and Python where it makes more sense.
 As a functional programming enthusiast I wanted to explore using an ML-like
-language for scripting. After evaluating a few languages for this purpose, I
-settled on F#. Unlike OCaml, which would be my first choice, F# comes with the
-stacked .NET standard library, which I felt like would keep me from having to
-use dependencies, which are always an annoyance when scripting. Unlike Haskell,
-I like F#'s simple pragmatism towards IO and mutability.
+language for scripting. I chose F# after evaluating a few languages for this
+purpose. My first choice was OCaml, but its anemic standard library made it hard
+to use for scripting. F# comes with the stacked .NET standard library, which I
+felt like would keep me from having to use dependencies. And unlike Haskell, I
+like F#'s simple pragmatism towards IO and mutability.
 
 This wasn't my first rodeo with F#. I've written a couple of simple servers with
 Giraffe and done a few advent of code problems with it. I also work with Rust in
 my day job, and have written a non-trivial amount of OCaml, so I come with some
-experience in the ML-like language space. However, in general my preference used
-to be OCaml and has now shifted to Rust because I don't like the OO side of F#,
-and when the servers I was writing got more complex I inevitably had to do OO.
-Scripting shouldn't get that complicated, so I was excited to try out F# for it.
+experience in the ML-like language space. However, my dislike of F#'s OO side
+had kept it from being my preference over OCaml and Rust when writing
+applications. Ideally, my scripts would be simple enough to not need OO at all,
+which would eliminate the biggest problem I had with F#. The other advantages
+were pretty compelling over the competition, so I was excited to try it out.
 
-It has been about a year since I started writing F# scripts, and now I have just
-under 1k lines of scripts in F#. These scripts run the gamut of things that one
-normally does with scripts: lots of filesystem access and network requests with
-a fair amount of glue logic. To commemorate this, I thought I'd write down my
-experiences with scripting in F# in the familiar "The Good, The Bad, The Ugly"
-format.
+It has been about a year since I started scripting in F#, and now I have just
+under a thousand lines running the gamut of things that one normally does with
+scripts: filesystem access, network requests and a fair amount of glue logic. To
+commemorate this, I thought I'd write down my experiences with scripting in F#
+in the familiar "The Good, The Bad, The Ugly" format.
 
 ## The Good
 
@@ -41,19 +41,24 @@ format.
 There's just something about ML languages that match the way I think about code,
 and that makes writing F# a breeze. I usually start with modeling the data I
 need and how it should flow through the script, and F# makes that simple with
-all the ML goodies. Pipelines are a great fit for scripting, which frequently
-comes down to "do this thing that can fail and then the next". The rest of the
-language is also very expressive, and I was very happy to find a great use case
-of active patterns! Much of this isn't F# specific, but I bring this up first
-because F# does nothing *wrong* and quite a lot right, and that in itself is
-great!
+all the ML goodies. In particular:
+
+- Pipelines are a great fit for scripting, which frequently comes down to "do
+  this thing that can fail and then the next". I wrote a custom "result
+  pipeline" operator to do this with fallible functions.
+- The type system is flexible with anonymous records and variants, a big plus
+  over Rust. For parts of the script where I didn't care too much about the
+  model I could skip a lot of boilerplate.
+- Since I was writing solely for myself, I experimented with a few of the more
+  complex language features. I was very happy to find a great use case of active
+  patterns!
 
 ### F# is super simple to deploy
 
 The .NET runtime ships with `fsi`, which is all I need, so my scripts can be
 `.fsx` files with a shebang up top. Admittedly this isn't a big deal, and most
 languages will have something like this, but for a compiled language that uses
-bulky .NET project files I wasn't expecting that. 
+bulky .NET project files I wasn't expecting that.
 
 But wait: fsi also has the sweet sweet sweet `#r` syntax, which is
 *significantly* better than many, if not most, languages. No other ML(-ish)
@@ -67,7 +72,7 @@ reference packages which are not on a package manager.
 
 I'll admit that I haven't used this system enough to know the gory details of
 where it can go wrong, but for my scripts I've had no issues with version
-conflicts etc, and they've happily kept chugging so far.
+conflicts, and they've happily kept chugging so far.
 
 ### Scaling up is easy
 
@@ -143,28 +148,31 @@ wish there was at least something like Kotlin's `apply` to make this easier.
 ### Exceptions everywhere
 
 I *hate hate hate* having to deal with exceptions from the standard library and
-NuGet packages. I *hate* having to write wrappers for every function that
-catches exceptions and converts them to Results, which I can actually pipeline
-and compose. You can't even write a fully generic function for this because
-sometimes I cared about handling an error and needed to know what it was. 
+NuGet packages. Exceptions break the "soundness" of the type system, meaning
+everything I like about ML ends up being less and less useful. They don't
+compose well, and intermixing a function that throws exceptions with functions
+that return results means writing and wrapping lots of boilerplate. 
 
 This was the single biggest reason I scaled down my usage of F#. I'd write some
 code, notice that it didn't return a `Result` even thought it was fallible, sigh
 and write boilerplate to convert the exception into a result. Even worse was
-when I used a library and it threw an exception that I wasn't expecting,
-completely ruining the "if it compiles it works" ideal of writing an ML. I was
-very tired of the boilerplate explosion, and with all the `try/with`s my scripts
-were becoming as cumbersome as Ruby or Python. 
+when I used a library and it threw an exception in runtime that I wasn't
+expecting. I was very tired of the boilerplate explosion, and with all the
+`try/with`s my scripts were becoming as cumbersome as Ruby or Python.
 
 ## Conclusion
 
-I'm very happy with F# for scripting. In my opinion, Deno[^4] with typescript is
-the best environment for scripting, but F# compares really well in terms of of
-affordances, utility and approachability. With my personal aesthetic
-preferences, there's usually little reason to prefer Deno over F# apart from
-libraries. Although I'll still keep writing Ruby (and Deno, if the libraries
-call for it), if I know a script is likely to be more complicated than I
-thought I'm going to write it in F#.
+As I mentioned, I ended up scaling down usage of F# for new scripts, usually in
+favour of Deno and Ruby. If it's something simple, I use ruby, and if it's more
+complex I use Deno with TS. I should stress that this doesn't mean that F# is
+*bad*. In my opinion, Deno[^4] with typescript is the most ergonomic environment
+for scripting, with all the advantages of F# and few disadvantages. And I say
+that despite JS/TS being a poor match for my aesthetics. F# compares really
+favourably to Deno, but the impedance mismatch between the language's aesthetics
+and the broader ecosystem it is in hurts me more than writing JS. Admittedly
+some of the F# 8 changes have caught my eye and made me excited to try it again
+for the more complex scripts I have on the horizon.
+
 
 [^4]: I haven't yet tried Bun, but I think it could be even better because my
     biggest issues with Deno was Node library compatibility. Bun's scripting
